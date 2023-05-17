@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List
+
 from pydantic import UUID4, BaseModel, Field, validator
 
 from models.files import FileBase
@@ -23,7 +24,7 @@ class UserLoginOrRegister(BaseWithORM):
 class UserToken(BaseModel):
     token: UUID4 = Field(..., alias="access_token")
     expire: datetime
-    token_type: Optional[str] = "bearer"
+    token_type: str | None = "bearer"
 
     class Config:
         orm_model = True

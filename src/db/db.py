@@ -1,11 +1,15 @@
-from core.config import config
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
+from core.config import config
 
 Base = declarative_base()
 
-engine = create_async_engine(config.postgres_dsn, echo=True, future=True)
+engine = create_async_engine(
+    config.postgres_dsn,
+    echo=config.app_query_logging,
+    future=True
+)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 

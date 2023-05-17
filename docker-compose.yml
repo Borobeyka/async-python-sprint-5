@@ -23,7 +23,7 @@ services:
     env_file:
       - .env.example
     ports:
-      - ${POSTGRES_PORT_EXTERNAL}:${POSTGRES_PORT}
+      - ${POSTGRES_PORT}
     environment:
       - POSTGRES_DB=${POSTGRES_NAME}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -38,7 +38,7 @@ services:
     networks:
       - inner
   nginx:
-    image: nginx:1.19.3
+    image: nginx:1.23.4
     ports:
       - ${NGINX_PORT_EXTERNAL}:${NGINX_PORT}
     volumes:
@@ -54,7 +54,7 @@ services:
   redis:
     image: redis:7.0.5
     ports:
-      - ${REDIS_PORT_EXTERNAL}:${REDIS_PORT}
+      - ${REDIS_PORT}
     env_file:
       - .env.example
     networks:

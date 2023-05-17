@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
-from pydantic import BaseSettings, Field, PostgresDsn
+
+from pydantic import BaseSettings, Field, PostgresDsn, RedisDsn
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -9,9 +10,9 @@ class AppConfig(BaseSettings):
     app_title: str = "File Storage API"
     app_host: str = Field(..., env="APP_HOST")
     app_port: int = Field(..., env="APP_PORT")
+    app_query_logging: int = Field(..., env="APP_QUERY_LOGGING")
     postgres_dsn: PostgresDsn = Field(..., env="POSTGRES_DSN")
-    redis_host: str = Field(..., env="REDIS_HOST")
-    redis_port: int = Field(..., env="REDIS_PORT")
+    redis_dsn: RedisDsn = Field(..., env="REDIS_DSN")
 
     redis_expire: timedelta = timedelta(minutes=5)
     token_expire: timedelta = timedelta(minutes=15)

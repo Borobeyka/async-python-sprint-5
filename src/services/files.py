@@ -1,23 +1,25 @@
+import os
 from datetime import datetime
 from io import BytesIO
-import os
-from typing import Optional
-from zipfile import ZipFile
-import aiofiles
 from pathlib import Path
-from fastapi import File, HTTPException, status, UploadFile as FAUploadFile
-from fastapi.responses import StreamingResponse, FileResponse
+from zipfile import ZipFile
+
+import aiofiles
+from fastapi import File, HTTPException
+from fastapi import UploadFile as FAUploadFile
+from fastapi import status
+from fastapi.responses import FileResponse, StreamingResponse
+
+from core.config import config
 from models.files import FileUpload, FileUploadResponse
 from models.user import UserBase
 from services.base import BaseService
-
-from core.config import config
 
 
 class FileService(BaseService):
     async def upload(
         self,
-        path: Optional[str],
+        path: str | None,
         file: FAUploadFile,
         user: UserBase
     ) -> FileUploadResponse:
@@ -47,8 +49,8 @@ class FileService(BaseService):
     async def download(
         self,
         user: UserBase,
-        identifier: Optional[str] = None,
-        path: Optional[str] = None
+        identifier: str | None = None,
+        path: str | None = None
     ):
         if path:
             directory = f"{config.folder_upload}/{user.username}/{path}"

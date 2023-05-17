@@ -1,5 +1,6 @@
-from datetime import datetime
 import json
+from datetime import datetime
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import and_, select
@@ -12,13 +13,13 @@ from models.db.users import UserModel
 from models.user import UserBase
 from services.base import BaseService
 
-
 oauth2_model = OAuth2PasswordBearer(tokenUrl="auth")
 
 
 class UserService(BaseService):
     async def get_user_by_token(self, token: str) -> UserBase:
-        if from_redis := redis_cli.get(token):
+        from_redis = await redis_cli.get(token)
+        if from_redis:
             return UserBase(**json.loads(from_redis).get("user"))
         statement = select(self.model).join(TokenModel).where(
             and_(

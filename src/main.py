@@ -1,13 +1,14 @@
 import time
-from fastapi import FastAPI, Depends, status
-from fastapi.responses import ORJSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from api import users, files
+from fastapi import Depends, FastAPI, status
+from fastapi.responses import ORJSONResponse
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from api import files, users
+from core.config import config
 from db.db import get_session
 from db.redis import redis_cli
-from core.config import config
 from models.system import PingModel
 from services.logger import logger
 
@@ -35,7 +36,7 @@ async def ping_services(db: AsyncSession = Depends(get_session)):
         postgres_response = None
     try:
         start = time.time()
-        redis_cli.get("nothing")
+        await redis_cli().get("nothing")
         redis_response = time.time() - start
     except Exception as ex:
         logger.debug(f"Error while requesting to ping redis, error - {ex}")

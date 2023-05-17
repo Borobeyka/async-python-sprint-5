@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from db.db import Base
-from models.db.files import FileModel # noqa F401
+from models.db.files import FileModel  # noqa F401
 
 
 class UserModel(Base):

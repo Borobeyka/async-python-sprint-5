@@ -1,6 +1,7 @@
-from uuid import uuid4
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Column, String
+from uuid import uuid4
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import UUIDType
 

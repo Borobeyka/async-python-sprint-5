@@ -1,5 +1,6 @@
-from typing import Optional
-from fastapi import APIRouter, Depends, File, UploadFile as FAUploadFile, status
+from fastapi import APIRouter, Depends, File
+from fastapi import UploadFile as FAUploadFile
+from fastapi import status
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,19 +14,19 @@ from services.users import get_current_user
 router = APIRouter()
 
 
-@router.get("/files/download")
+@router.get("/files/download", description="Download file or folder by identifier or path")
 async def user_files(
-    identifier: Optional[str] = None,
-    path: Optional[str] = None,
+    identifier: str | None = None,
+    path: str | None = None,
     db: AsyncSession = Depends(get_session),
     current_user: UserBase = Depends(get_current_user),
 ) -> FileResponse:
     return await FileService(db, FileModel).download(current_user, identifier, path)
 
 
-@router.post("/upload")
+@router.post("/upload", description="Upload user file on server")
 async def user_files(
-    path: Optional[str] = None,
+    path: str | None = None,
     db: AsyncSession = Depends(get_session),
     current_user: UserBase = Depends(get_current_user),
     file: FAUploadFile = File()
@@ -33,7 +34,12 @@ async def user_files(
     return await FileService(db, FileModel).upload(path, file, current_user)
 
 
-@router.get("/files", response_model=UserFiles, status_code=status.HTTP_200_OK)
+@router.get(
+    "/files",
+    response_model=UserFiles,
+    status_code=status.HTTP_200_OK,
+    description="Display user statistics by uploaded files"
+)
 async def user_files(
     db: AsyncSession = Depends(get_session),
     current_user: UserBase = Depends(get_current_user)

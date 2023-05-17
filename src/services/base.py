@@ -1,9 +1,10 @@
 import datetime
-from pydantic import BaseModel
-from typing import Any, Dict, Optional, Type, TypeVar
+from typing import Any, Dict, Type, TypeVar
+
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel
 from sqlalchemy import Select, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db import Base
 
@@ -18,7 +19,7 @@ def set_params(statement: Select, model: Type[ModelType], params: dict) -> Selec
 
 
 class BaseService():
-    def __init__(self, db: AsyncSession, model: Optional[Type[ModelType]] = None):
+    def __init__(self, db: AsyncSession, model: Type[ModelType] | None = None):
         self.db = db
         self.model = model
 
@@ -26,7 +27,7 @@ class BaseService():
             self,
             is_one: bool = False,
             **kwargs: Dict[str, Any]
-    ) -> Optional[Type[ModelType]]:
+    ) -> Type[ModelType] | None:
         statement = select(self.model)
         statement = set_params(statement, self.model, kwargs)
         result = await self.db.execute(statement=statement)

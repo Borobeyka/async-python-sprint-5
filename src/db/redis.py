@@ -1,5 +1,7 @@
-import redis
+import redis.asyncio as redis
 
 from core.config import config
 
-redis_cli = redis.Redis(host=config.redis_host, port=config.redis_port)
+
+async def redis_cli():
+    return await redis.from_url(config.redis_dsn)
