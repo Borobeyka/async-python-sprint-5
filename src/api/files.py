@@ -19,7 +19,7 @@ async def user_files(
     path: Optional[str] = None,
     db: AsyncSession = Depends(get_session),
     current_user: UserBase = Depends(get_current_user),
-) -> FileResponse | File:
+) -> FileResponse:
     return await FileService(db, FileModel).download(current_user, identifier, path)
 
 

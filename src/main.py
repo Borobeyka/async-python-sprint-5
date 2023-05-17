@@ -1,5 +1,4 @@
 import time
-import uvicorn
 from fastapi import FastAPI, Depends, status
 from fastapi.responses import ORJSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -46,7 +45,3 @@ async def ping_services(db: AsyncSession = Depends(get_session)):
         "db": postgres_response,
         "cache": redis_response
     }
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host=config.app_host, port=config.app_port)

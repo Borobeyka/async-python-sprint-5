@@ -3,7 +3,7 @@ import json
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from db.db import get_session
 from db.redis import redis_cli
@@ -19,6 +19,7 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserBase, status_code=status.HTTP_201_CREATED)
 async def user_register(user: UserLoginOrRegister, db: AsyncSession = Depends(get_session)):
+    user.password = generate_password_hash(user.password)
     answer = await BaseService(db, UserModel).create(obj_in=user)
     return UserBase(**answer.__dict__)
 
