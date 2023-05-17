@@ -50,5 +50,5 @@ async def user_auth(
 
 
 @router.get("/me")
-async def me(current_user=Depends(get_current_user)):
-    print(f"{current_user=}")
+async def me(current_user: UserBase = Depends(get_current_user)):
+    return current_user

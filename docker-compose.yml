@@ -1,0 +1,69 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+    container_name: app
+    command: sh -c "${COMMAND_APP_START}"
+    env_file:
+      - .env.example
+    ports:
+      - ${APP_PORT_EXTERNAL}:${APP_PORT}
+    volumes:
+      - ./${APP_FOLDER_UPLOADS}:/async-python-sprint-5/${APP_FOLDER_UPLOADS}/
+    networks:
+      - inner
+    depends_on:
+      db_postgres:
+        condition: service_healthy
+  db_postgres:
+    image: postgres:14
+    container_name: db_postgres
+    env_file:
+      - .env.example
+    ports:
+      - ${POSTGRES_PORT_EXTERNAL}:${POSTGRES_PORT}
+    environment:
+      - POSTGRES_DB=${POSTGRES_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - inner
+  nginx:
+    image: nginx:1.19.3
+    ports:
+      - ${NGINX_PORT_EXTERNAL}:${NGINX_PORT}
+    volumes:
+      - ./services/nginx.conf:/etc/nginx/conf.d/site.conf.template
+      - ./${APP_FOLDER_UPLOADS}:/async-python-sprint-5/${APP_FOLDER_UPLOADS}/
+    command: sh -c "${COMMAND_NGINX_START}"
+    env_file:
+      - .env.example
+    networks:
+      - inner
+    depends_on:
+      - app
+  redis:
+    image: redis:7.0.5
+    ports:
+      - ${REDIS_PORT_EXTERNAL}:${REDIS_PORT}
+    env_file:
+      - .env.example
+    networks:
+      - inner
+    depends_on:
+      - app
+
+networks:
+  inner:
+    driver: bridge
+volumes:
+  postgres_data:

@@ -1,15 +1,11 @@
 import datetime
-import json
 from pydantic import BaseModel
 from typing import Any, Dict, Optional, Type, TypeVar
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import Select, and_, select, update
+from sqlalchemy import Select, select, update
 
 from db.db import Base
-from db.redis import redis_cli
-from models.db.tokens import TokenModel
-from models.user import UserBase
 
 ModelType = TypeVar("ModelType", bound=Base)
 SchemaType = TypeVar("SchemaType", bound=BaseModel)
@@ -65,15 +61,3 @@ class BaseService():
         await self.db.execute(statement=statement)
         await self.db.commit()
         return db_obj
-
-    async def get_user_by_token(self, token: str) -> UserBase:
-        if from_redis := redis_cli.get(token):
-            return UserBase(**json.loads(from_redis).get("user"))
-        statement = select(self.model).join(TokenModel).where(
-            and_(
-                TokenModel.token == token,
-                TokenModel.expire > datetime.now()
-            )
-        )
-        user = await self.db.execute(statement=statement)
-        return UserBase(**user.scalar_one_or_none())

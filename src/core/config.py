@@ -16,6 +16,8 @@ class AppConfig(BaseSettings):
     redis_expire: timedelta = timedelta(minutes=5)
     token_expire: timedelta = timedelta(minutes=15)
 
+    folder_upload: str = Field(..., env="APP_FOLDER_UPLOADS")
+
     class Config:
         env_file = ".env.example"
 

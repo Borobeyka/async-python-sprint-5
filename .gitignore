@@ -2,8 +2,10 @@
 __pycache__/
 .pytest_cache/
 .vscode/
+uploads/
 .idea/
 venv/
 *.pyc
 *.log
 cmds.txt
+.env.example
