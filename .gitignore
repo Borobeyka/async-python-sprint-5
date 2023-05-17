@@ -5,6 +5,7 @@ __pycache__/
 uploads/
 .idea/
 venv/
+.ssh/
 *.pyc
 *.log
 cmds.txt
