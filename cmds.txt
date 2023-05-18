@@ -1,0 +1,15 @@
+alembic revision --autogenerate -m initial
+alembic upgrade head
+
+
+docker build . -t async-python-sprint-5__app:latest
+docker compose --env-file=.env.example up --build --force-recreate
+
+
+ssh borobeyka@public_ip
+ssh -i ./.ssh/id_rsa borobeyka@public_ip
+
+
+
+Стек:
+FastAPI, PostgreSQL, SQLAlchemy, Redis, pydantic, alembic, uvicorn, Docker.
